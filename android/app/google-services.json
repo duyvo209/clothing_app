@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "315687594138",
+    "firebase_url": "https://duyvostudio.firebaseio.com",
+    "project_id": "duyvostudio",
+    "storage_bucket": "duyvostudio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315687594138:android:90ad73d397f15a3c48d723",
+        "android_client_info": {
+          "package_name": "com.example.duyvo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315687594138-r6kh0eon08en6phasni5e2m13id20vo5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANQMCp0DKy8O4LEi5KhLEz071h_i6ytOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315687594138-r6kh0eon08en6phasni5e2m13id20vo5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
