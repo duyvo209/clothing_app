@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duyvo/blocs/login/login_bloc.dart';
@@ -71,11 +72,13 @@ class _DetailPageState extends State<DetailPage> {
         key: showSnackBar,
         appBar: AppBar(
           centerTitle: true,
-          title: Text(
+          title: AutoSizeText(
             "${widget.product.productName}",
             style: TextStyle(
               color: Colors.black,
+              fontSize: 20,
             ),
+            maxLines: 1,
           ),
           backgroundColor: Colors.white,
           brightness: Brightness.light,

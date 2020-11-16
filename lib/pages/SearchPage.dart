@@ -127,7 +127,7 @@ class _SearchPageState extends State<SearchPage> {
                               );
                             }).toList(),
                           )
-                        : Center(child: Text("Not found"));
+                        : Center(child: Text("Not found".tr().toString()));
                   }
                   // Loading State
                   return Scaffold(

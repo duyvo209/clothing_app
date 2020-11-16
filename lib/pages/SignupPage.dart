@@ -162,9 +162,9 @@ class _SignupPageState extends State<SignupPage> {
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         colors: [
-                      Colors.blueGrey[100],
-                      Colors.blueGrey[400],
-                      Colors.blueGrey[800]
+                      Colors.grey[200],
+                      Colors.grey[400],
+                      Colors.grey[800]
                     ])),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

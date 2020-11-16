@@ -1,4 +1,5 @@
 import 'package:duyvo/blocs/login/login_bloc.dart';
+import 'package:duyvo/pages/HomePage.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,8 @@ class _LoginPageState extends State<LoginPage> {
               });
         }
         if (state.loginSuccess) {
-          Navigator.pop(context);
+          Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => new HomePage()));
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
@@ -111,9 +113,9 @@ class _LoginPageState extends State<LoginPage> {
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         colors: [
-                      Colors.blueGrey[100],
-                      Colors.blueGrey[400],
-                      Colors.blueGrey[800]
+                      Colors.grey[200],
+                      Colors.grey[400],
+                      Colors.grey[800]
                     ])),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
