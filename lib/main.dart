@@ -14,14 +14,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'blocs/cart/cart_bloc.dart';
 import 'blocs/register/register_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // if (!kReleaseMode) {
   //   Bloc.observer = AppBlocObserver();
-  // }
-  runApp((MyApp()));
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarBrightness: Brightness.light,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarColor: Colors.white,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
+
+  runApp(EasyLocalization(
+    child: (MyApp()),
+    path: "assets/langs",
+    saveLocale: true,
+    supportedLocales: [
+      Locale('vi', 'VN'),
+      Locale('en', 'US'),
+    ],
+    fallbackLocale: Locale('en', 'US'),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -73,6 +90,9 @@ class _MyAppState extends State<MyApp> {
               scaffoldBackgroundColor: Colors.white,
               dividerColor: Colors.transparent,
             ),
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
           ),
         ));
   }

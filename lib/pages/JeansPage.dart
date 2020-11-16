@@ -1,9 +1,14 @@
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duyvo/blocs/jeans/jeans_bloc.dart';
+import 'package:duyvo/blocs/login/login_bloc.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:duyvo/pages/DetailPage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'CartPage.dart';
 
 class JeansPage extends StatefulWidget {
   @override
@@ -11,12 +16,14 @@ class JeansPage extends StatefulWidget {
 }
 
 class _JeansPageState extends State<JeansPage> {
+  var user;
   @override
   void initState() {
     super.initState();
     BlocProvider.of<JeansBloc>(context).add(
       GetListJeans(),
     );
+    user = BlocProvider.of<LoginBloc>(context).state.user;
   }
 
   @override
@@ -38,10 +45,50 @@ class _JeansPageState extends State<JeansPage> {
             actionsIconTheme: IconThemeData(color: Colors.black),
             iconTheme: IconThemeData(color: Colors.black),
             actions: <Widget>[
-              IconButton(
-                icon: Icon(EvaIcons.shoppingCartOutline),
-                onPressed: () {},
-              ),
+              user != null
+                  ? StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .collection('cart')
+                          .snapshots(),
+                      builder: (_, snapshot) {
+                        if (snapshot.data != null) {
+                          int quantity = snapshot.data.docs.length;
+                          return Badge(
+                            badgeContent: Text(
+                              "$quantity",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            badgeColor: Colors.red[600],
+                            shape: BadgeShape.circle,
+                            position:
+                                BadgePosition.topStart(start: 25, top: 2.5),
+                            animationType: BadgeAnimationType.scale,
+                            child: IconButton(
+                              icon: Icon(EvaIcons.shoppingCartOutline),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    new MaterialPageRoute(
+                                        builder: (context) => new CartPage()));
+                              },
+                            ),
+                          );
+                        }
+                        return Container();
+                      })
+                  : IconButton(
+                      icon: Icon(EvaIcons.shoppingCartOutline),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            new MaterialPageRoute(
+                                builder: (context) => new CartPage()));
+                      },
+                    ),
             ],
           ),
           body: Container(
@@ -110,7 +157,7 @@ class _JeansPageState extends State<JeansPage> {
                                   tag: product.image,
                                   child: CachedNetworkImage(
                                     imageUrl:
-                                        "https://drive.google.com/thumbnail?id=${product.image}&sz=w200-h200",
+                                        "https://drive.google.com/thumbnail?id=${product.picture[0]}&sz=w200-h200",
                                   ),
                                 ),
                               ),

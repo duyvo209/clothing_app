@@ -16,6 +16,7 @@ import 'package:duyvo/pages/TShirtPage.dart';
 import 'package:duyvo/pages/ShirtPage.dart';
 import 'package:duyvo/pages/JeansPage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,9 +32,9 @@ class _HomePageState extends State<HomePage> {
 
   GlobalKey<ScaffoldState> drawerKey = GlobalKey();
 
-  void _openEndDrawer() {
-    drawerKey.currentState.openEndDrawer();
-  }
+  // void _openEndDrawer() {
+  //   drawerKey.currentState.openEndDrawer();
+  // }
 
   // void _closeEndDrawer() {
   //   Navigator.of(context).pop();
@@ -47,26 +48,22 @@ class _HomePageState extends State<HomePage> {
   //   });
   // }
 
+  var user;
+
   void initState() {
     super.initState();
     BlocProvider.of<NewArrivalsBloc>(context).add(GetListNewArrival());
+    user = BlocProvider.of<LoginBloc>(context).state.user;
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ));
-
     return Scaffold(
       key: drawerKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "DuyVo",
+          'DuyVo'.tr().toString(),
           style: TextStyle(
             color: Colors.black,
           ),
@@ -83,20 +80,49 @@ class _HomePageState extends State<HomePage> {
           icon: Icon(EvaIcons.menuOutline),
         ),
         actions: <Widget>[
-          Badge(
-            badgeContent: Text(
-              '3',
-              style: TextStyle(color: Colors.white),
-            ),
-            badgeColor: Colors.red[600],
-            shape: BadgeShape.circle,
-            position: BadgePosition.topStart(start: 25, top: 2.5),
-            animationType: BadgeAnimationType.scale,
-            child: IconButton(
-              icon: Icon(EvaIcons.shoppingCartOutline),
-              onPressed: _openEndDrawer,
-            ),
-          ),
+          user != null
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(user.uid)
+                      .collection('cart')
+                      .snapshots(),
+                  builder: (_, snapshot) {
+                    if (snapshot.data != null) {
+                      int quantity = snapshot.data.docs.length;
+                      return Badge(
+                        badgeContent: Text(
+                          "$quantity",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        badgeColor: Colors.red[600],
+                        shape: BadgeShape.circle,
+                        position: BadgePosition.topStart(start: 25, top: 2.5),
+                        animationType: BadgeAnimationType.scale,
+                        child: IconButton(
+                          icon: Icon(EvaIcons.shoppingCartOutline),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                    builder: (context) => new CartPage()));
+                          },
+                        ),
+                      );
+                    }
+                    return Container();
+                  })
+              : IconButton(
+                  icon: Icon(EvaIcons.shoppingCartOutline),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => new CartPage()));
+                  },
+                ),
         ],
       ),
       drawerEdgeDragWidth: 0,
@@ -136,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                           currentAccountPicture: ClipRRect(
                             borderRadius: BorderRadius.circular(70),
                             child: Image.asset(
-                              "assets/duyvo.jpg",
+                              "assets/nancy.jpg",
                               width: 70,
                               height: 70,
                               fit: BoxFit.cover,
@@ -160,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => new HomePage()));
               },
               title: Text(
-                "Home",
+                "Home".tr().toString(),
                 style: TextStyle(fontSize: 16),
               ),
               leading: Icon(EvaIcons.homeOutline),
@@ -168,7 +194,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 10),
             ExpansionTile(
               title: Text(
-                'Products',
+                'Products'.tr().toString(),
                 style: TextStyle(fontSize: 16),
               ),
               leading: Icon(EvaIcons.cubeOutline),
@@ -230,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => new CollectionPage()));
               },
               title: Text(
-                "Collection",
+                "Collection".tr().toString(),
                 style: TextStyle(fontSize: 16),
               ),
               leading: Icon(EvaIcons.imageOutline),
@@ -239,7 +265,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 10),
             ListTile(
               title: Text(
-                "About",
+                "About".tr().toString(),
                 style: TextStyle(fontSize: 16),
               ),
               leading: Icon(EvaIcons.infoOutline),
@@ -257,7 +283,7 @@ class _HomePageState extends State<HomePage> {
                               builder: (context) => new LoginPage()));
                     },
                     title: Text(
-                      "Login",
+                      "Login".tr().toString(),
                       style: TextStyle(fontSize: 16),
                     ),
                     leading: Icon(EvaIcons.personOutline),
@@ -266,13 +292,49 @@ class _HomePageState extends State<HomePage> {
                 } else {
                   return ListTile(
                     onTap: () async {
-                      BlocProvider.of<LoginBloc>(context).add(
-                        LogOut(),
-                      );
-                      Navigator.pop(context, true);
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return SimpleDialog(
+                              title: Text("Success",
+                                  style: TextStyle(color: Colors.green[600])),
+                              children: [
+                                SizedBox(
+                                  height: 1,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 25, right: 20),
+                                  child: Text("You was logged out !"),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                RaisedButton(
+                                  onPressed: () {
+                                    BlocProvider.of<LoginBloc>(context).add(
+                                      LogOut(),
+                                    );
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HomePage(),
+                                        ));
+                                  },
+                                  padding: EdgeInsets.only(left: 50, right: 50),
+                                  child: Container(
+                                    child: Icon(
+                                      Icons.check_outlined,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  color: Colors.blueGrey[800],
+                                ),
+                              ],
+                            );
+                          });
                     },
                     title: Text(
-                      "Logout",
+                      "Logout".tr().toString(),
                       style: TextStyle(fontSize: 16),
                     ),
                     leading: Icon(EvaIcons.personOutline),
@@ -283,41 +345,31 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 10),
             ExpansionTile(
               title: Text(
-                'Settings',
+                'Settings'.tr().toString(),
                 style: TextStyle(fontSize: 16),
               ),
               leading: Icon(EvaIcons.settingsOutline),
               children: <Widget>[
                 ExpansionTile(
                     title: Text(
-                      'Theme',
+                      'Theme'.tr().toString(),
                       style: TextStyle(fontSize: 16),
                     ),
                     leading: Icon(EvaIcons.bulbOutline),
                     children: <Widget>[
                       ListTile(
-                        onTap: () {
-                          // setState(() {
-                          //   EasyLocalization.of(context).locale =
-                          //       Locale('vi', 'Vi');
-                          // });
-                        },
+                        onTap: () {},
                         title: Text(
-                          "Light Theme",
+                          "Light Theme".tr().toString(),
                           style: TextStyle(fontSize: 16),
                         ),
                         leading: Icon(EvaIcons.arrowIosForwardOutline),
                         //Icon(),
                       ),
                       ListTile(
-                        onTap: () {
-                          // setState(() {
-                          //   EasyLocalization.of(context).locale =
-                          //       Locale('en', 'En');
-                          // });
-                        },
+                        onTap: () {},
                         title: Text(
-                          "Dark Theme",
+                          "Dark Theme".tr().toString(),
                           style: TextStyle(fontSize: 16),
                         ),
                         leading: Icon(EvaIcons.arrowIosForwardOutline),
@@ -326,20 +378,20 @@ class _HomePageState extends State<HomePage> {
                     ]),
                 ExpansionTile(
                     title: Text(
-                      'Langueges',
+                      'Langueges'.tr().toString(),
                       style: TextStyle(fontSize: 16),
                     ),
                     leading: Icon(EvaIcons.globeOutline),
                     children: <Widget>[
                       ListTile(
                         onTap: () {
-                          // setState(() {
-                          //   EasyLocalization.of(context).locale =
-                          //       Locale('vi', 'Vi');
-                          // });
+                          setState(() {
+                            EasyLocalization.of(context).locale =
+                                Locale('vi', 'VN');
+                          });
                         },
                         title: Text(
-                          "Vietnamese",
+                          "Vietnamese".tr().toString(),
                           style: TextStyle(fontSize: 16),
                         ),
                         leading: Icon(EvaIcons.arrowIosForwardOutline),
@@ -347,13 +399,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                       ListTile(
                         onTap: () {
-                          // setState(() {
-                          //   EasyLocalization.of(context).locale =
-                          //       Locale('en', 'En');
-                          // });
+                          setState(() {
+                            EasyLocalization.of(context).locale =
+                                Locale('en', 'US');
+                          });
                         },
                         title: Text(
-                          "English",
+                          "English".tr().toString(),
                           style: TextStyle(fontSize: 16),
                         ),
                         leading: Icon(EvaIcons.arrowIosForwardOutline),
@@ -379,30 +431,32 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      endDrawer: Drawer(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // const Text("This is the cart"),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => new CartPage()));
-                },
-                child: const Text('Cart'),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.black),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+
+      // endDrawer: Drawer(
+      //   child: Center(
+      //     child: Column(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       children: <Widget>[
+      //         // const Text("This is the cart"),
+      //         ElevatedButton(
+      //           onPressed: () {
+      //             Navigator.pop(context);
+      //             Navigator.push(
+      //                 context,
+      //                 new MaterialPageRoute(
+      //                     builder: (context) => new CartPage()));
+      //           },
+      //           child: const Text('Cart'),
+      //           style: ButtonStyle(
+      //             backgroundColor:
+      //                 MaterialStateProperty.all<Color>(Colors.black),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
+
       body: Container(
         child: SingleChildScrollView(
           child: Column(
@@ -427,7 +481,7 @@ class _HomePageState extends State<HomePage> {
                   readOnly: true,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: "Search products ...",
+                    hintText: "Search".tr().toString(),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                     prefixIcon: Icon(
@@ -470,7 +524,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "New Arrivals",
+                  "New Arrivals".tr().toString(),
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -506,7 +560,7 @@ class _HomePageState extends State<HomePage> {
                                 tag: product.image,
                                 child: CachedNetworkImage(
                                   imageUrl:
-                                      "https://drive.google.com/thumbnail?id=${product.image}&sz=w200-h200",
+                                      "https://drive.google.com/thumbnail?id=${product.picture[0]}&sz=w200-h200",
                                 ),
                               ),
                             ),

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:flutter/services.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -68,10 +69,10 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     Padding(
                       child: Text(state.loginError),
-                      padding: EdgeInsets.only(left: 20, right: 20),
+                      padding: EdgeInsets.only(left: 25, right: 20),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     RaisedButton(
                       onPressed: () {
@@ -79,9 +80,13 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       padding: EdgeInsets.only(left: 50, right: 50),
                       child: Container(
-                        child: Icon(Icons.close_outlined),
+                        child: Icon(
+                          Icons.close_outlined,
+                          color: Colors.white,
+                        ),
                         width: 10,
                       ),
+                      color: Colors.blueGrey[800],
                     )
                   ],
                 );
@@ -106,9 +111,9 @@ class _LoginPageState extends State<LoginPage> {
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         colors: [
-                      Colors.grey[100],
-                      Colors.grey[400],
-                      Colors.grey[800]
+                      Colors.blueGrey[100],
+                      Colors.blueGrey[400],
+                      Colors.blueGrey[800]
                     ])),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "Login",
+                            "Login".tr().toString(),
                             style: TextStyle(
                                 color: Colors.grey[700], fontSize: 40),
                           ),
@@ -179,7 +184,8 @@ class _LoginPageState extends State<LoginPage> {
                                           textInputAction: TextInputAction.next,
                                           decoration: InputDecoration(
                                               // hintText: "Password",
-                                              labelText: "Password",
+                                              labelText:
+                                                  "Password".tr().toString(),
                                               hintStyle:
                                                   TextStyle(color: Colors.grey),
                                               errorText: _passwordError()),
@@ -201,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 SignupPage()));
                                   },
                                   child: Text(
-                                    "Create A New Account",
+                                    "Create a new account".tr().toString(),
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                 ),
@@ -229,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                                         color: Colors.black),
                                     child: Center(
                                       child: Text(
-                                        "Login",
+                                        "Login".tr().toString(),
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),
@@ -241,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                                   height: 35,
                                 ),
                                 Text(
-                                  "Continue with social media",
+                                  "Continue with social media".tr().toString(),
                                   style: TextStyle(color: Colors.grey),
                                 ),
                                 SizedBox(
@@ -293,10 +299,10 @@ class _LoginPageState extends State<LoginPage> {
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(50),
-                                            color: Colors.yellow[800]),
+                                            color: Colors.blueGrey[800]),
                                         child: Center(
                                           child: Text(
-                                            "Google",
+                                            "Phone",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold),

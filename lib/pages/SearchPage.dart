@@ -4,6 +4,7 @@ import 'package:duyvo/models/Product.dart';
 import 'package:duyvo/pages/DetailPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -16,6 +17,21 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Container(
+          child: CustomInput(
+            hintText: "Search".tr().toString(),
+            onSubmitted: (value) {
+              setState(() {
+                _searchString = value.toLowerCase();
+              });
+            },
+          ),
+        ),
+      ),
       body: Container(
         child: Stack(
           children: [
@@ -23,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
               Center(
                 child: Container(
                   child: Text(
-                    "",
+                    "Search Result".tr().toString(),
                   ),
                 ),
               )
@@ -48,7 +64,7 @@ class _SearchPageState extends State<SearchPage> {
                     return snapshot.data.size > 0
                         ? ListView(
                             padding: EdgeInsets.only(
-                              top: 128.0,
+                              top: 36.0,
                               bottom: 12.0,
                             ),
                             children: snapshot.data.docs.map((document) {
@@ -62,6 +78,7 @@ class _SearchPageState extends State<SearchPage> {
                                         crossAxisCount: 1,
                                         shrinkWrap: true,
                                         childAspectRatio: 1 / 0.65,
+                                        padding: const EdgeInsets.only(top: 10),
                                         children: [
                                           GestureDetector(
                                             onTap: () {
@@ -87,7 +104,11 @@ class _SearchPageState extends State<SearchPage> {
                                                           "https://drive.google.com/thumbnail?id=${document.data()['img']}&sz=w200-h200",
                                                     ),
                                                   )),
-                                                  Text(document.data()['name']),
+                                                  Text(
+                                                    document.data()['name'],
+                                                    style:
+                                                        TextStyle(fontSize: 18),
+                                                  ),
                                                   Text(
                                                     "${document.data()['price']}\$",
                                                     style: TextStyle(
@@ -116,19 +137,6 @@ class _SearchPageState extends State<SearchPage> {
                   );
                 },
               ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 45.0,
-              ),
-              child: CustomInput(
-                hintText: "Search products...",
-                onSubmitted: (value) {
-                  setState(() {
-                    _searchString = value.toLowerCase();
-                  });
-                },
-              ),
-            ),
           ],
         ),
       ),
@@ -138,7 +146,7 @@ class _SearchPageState extends State<SearchPage> {
 
 class FirebaseServices {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  // FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   String getUserId() {
     return _firebaseAuth.currentUser.uid;
@@ -172,8 +180,8 @@ class CustomInput extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.symmetric(
-        vertical: 8.0,
-        horizontal: 24.0,
+        vertical: 0,
+        horizontal: 0,
       ),
       decoration: BoxDecoration(
           color: Color(0xFFF2F2F2), borderRadius: BorderRadius.circular(12.0)),

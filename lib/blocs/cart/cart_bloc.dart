@@ -36,6 +36,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
 
     if (event is ClearAllCart) {
+      print('CartBloc #$hashCode');
       var listCarts = await FirebaseFirestore.instance
           .collection('users')
           .doc(event.userId)

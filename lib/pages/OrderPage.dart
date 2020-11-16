@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:expandable/expandable.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class OrderPage extends StatefulWidget {
   @override
@@ -58,7 +59,7 @@ class _OrderPageState extends State<OrderPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Your Orders",
+                    "Your Orders".tr().toString(),
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -96,24 +97,30 @@ class _OrderPageState extends State<OrderPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    "Order Date: ${DateFormat('dd-MM-yyyy').format(order.dateTime)}",
+                                    "Order Date".tr().toString() +
+                                        ": ${DateFormat('dd-MM-yyyy').format(order.dateTime)}",
                                     textAlign: TextAlign.center,
                                   ),
                                   SizedBox(
                                     height: 10,
                                   ),
                                   Text(
-                                      "Products: ${product.product.productName} (${product.quantity})",
+                                      "Products".tr().toString() +
+                                          ": ${product.product.productName} (${product.quantity})",
                                       textAlign: TextAlign.center),
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  Text("Total: ${order.total}\$",
+                                  Text(
+                                      "Total".tr().toString() +
+                                          " ${order.total}\$",
                                       textAlign: TextAlign.center),
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  Text("Status: ${order.status}",
+                                  Text(
+                                      "Status".tr().toString() +
+                                          ": ${order.status}",
                                       textAlign: TextAlign.center),
                                   SizedBox(
                                     height: 30,

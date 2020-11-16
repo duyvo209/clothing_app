@@ -26,7 +26,7 @@ class JeansBloc extends Bloc<JeansEvent, JeansState> {
               var product = Product.fromFireStore(e.data());
               return product;
             })
-            .where((element) => element.type == 'tshirt')
+            .where((element) => element.type == 'jeans')
             .toList();
         yield state.copyWith(listProduct);
       } catch (e) {

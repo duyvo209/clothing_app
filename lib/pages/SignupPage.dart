@@ -4,6 +4,11 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 
 class SignupPage extends StatefulWidget {
   final String title = "Registration";
@@ -28,6 +33,7 @@ class _SignupPageState extends State<SignupPage> {
   String password = '';
   String retypepassword = '';
   bool isFirstTime = true;
+  File _image;
 
   @override
   initState() {
@@ -111,6 +117,27 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    Future getImage() async {
+      var image = await ImagePicker().getImage(source: ImageSource.gallery);
+      setState(() {
+        _image = File(image.path);
+        print('Image Path $_image');
+      });
+    }
+
+    Future uploadPic(BuildContext context) async {
+      String fileName = basename(_image.path);
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child(fileName);
+      UploadTask uploadTask = firebaseStorageRef.putFile(_image);
+      // TaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      setState(() {
+        print("Profile Picture uploaded");
+        Scaffold.of(context)
+            .showSnackBar(SnackBar(content: Text('Profile Picture Uploaded')));
+      });
+    }
+
     return BlocListener<RegisterBloc, RegisterState>(listener: (_, state) {
       if (state.registerSuccess) {
         Navigator.push(
@@ -135,9 +162,9 @@ class _SignupPageState extends State<SignupPage> {
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         colors: [
-                      Colors.grey[100],
-                      Colors.grey[400],
-                      Colors.grey[800]
+                      Colors.blueGrey[100],
+                      Colors.blueGrey[400],
+                      Colors.blueGrey[800]
                     ])),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +178,7 @@ class _SignupPageState extends State<SignupPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "Registration",
+                            "Registration".tr().toString(),
                             style: TextStyle(
                                 color: Colors.grey[700], fontSize: 40),
                           ),
@@ -180,17 +207,49 @@ class _SignupPageState extends State<SignupPage> {
                                   height: 0,
                                 ),
                                 Container(
-                                  // decoration: BoxDecoration(
-                                  //     color: Colors.white,
-                                  //     borderRadius: BorderRadius.circular(10),
-                                  //     boxShadow: [
-                                  //       BoxShadow(
-                                  //           color: Color.fromRGBO(225, 95, 27, .3),
-                                  //           blurRadius: 20,
-                                  //           offset: Offset(0, 10))
-                                  //     ]),
                                   child: Column(
                                     children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: CircleAvatar(
+                                              radius: 75,
+                                              backgroundColor: Colors.grey[300],
+                                              child: ClipOval(
+                                                child: new SizedBox(
+                                                  width: 140.0,
+                                                  height: 140.0,
+                                                  child: (_image != null)
+                                                      ? Image.file(
+                                                          _image,
+                                                          fit: BoxFit.fill,
+                                                        )
+                                                      : Image.asset(
+                                                          "assets/noavt.png",
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 60.0),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.camera_alt,
+                                                size: 30.0,
+                                                color: Colors.blueGrey[700],
+                                              ),
+                                              onPressed: () {
+                                                getImage();
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                       Container(
                                         padding: EdgeInsets.all(10),
                                         child: TextFormField(
@@ -198,7 +257,8 @@ class _SignupPageState extends State<SignupPage> {
                                           textInputAction: TextInputAction.next,
                                           decoration: InputDecoration(
                                               // hintText: "First Name",
-                                              labelText: "First Name",
+                                              labelText:
+                                                  "First Name".tr().toString(),
                                               hintStyle:
                                                   TextStyle(color: Colors.grey),
                                               errorText: _firstnameError()),
@@ -217,7 +277,8 @@ class _SignupPageState extends State<SignupPage> {
                                           textInputAction: TextInputAction.next,
                                           decoration: InputDecoration(
                                               // hintText: "Last Name",
-                                              labelText: "Last Name",
+                                              labelText:
+                                                  "Last Name".tr().toString(),
                                               hintStyle:
                                                   TextStyle(color: Colors.grey),
                                               errorText: _lastnameError()),
@@ -257,7 +318,8 @@ class _SignupPageState extends State<SignupPage> {
                                           textInputAction: TextInputAction.next,
                                           decoration: InputDecoration(
                                               // hintText: "Password",
-                                              labelText: "Password",
+                                              labelText:
+                                                  "Password".tr().toString(),
                                               hintStyle:
                                                   TextStyle(color: Colors.grey),
                                               errorText: _passwordError()),
@@ -277,7 +339,9 @@ class _SignupPageState extends State<SignupPage> {
                                           textInputAction: TextInputAction.next,
                                           decoration: InputDecoration(
                                               // hintText: "Retype Password",
-                                              labelText: "Retype Password",
+                                              labelText: "Retype Password"
+                                                  .tr()
+                                                  .toString(),
                                               hintStyle:
                                                   TextStyle(color: Colors.grey),
                                               errorText:
@@ -308,6 +372,7 @@ class _SignupPageState extends State<SignupPage> {
                                           email: _emailController.text,
                                           password: _passwordController.text),
                                     );
+                                    uploadPic(context);
                                   },
                                   child: Container(
                                     height: 50,
@@ -318,7 +383,7 @@ class _SignupPageState extends State<SignupPage> {
                                         color: Colors.black),
                                     child: Center(
                                       child: Text(
-                                        "Registration",
+                                        "Registration".tr().toString(),
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w600),

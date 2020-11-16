@@ -35,6 +35,7 @@ dependencies:
   # firebase_core: "0.5.0+1"
   # firebase_analytics: ^5.0.2
   firebase_auth: ^0.18.1+2
+  firebase_storage: ^5.0.1
   firebase_dynamic_links : ^0.5.1
   # cloud_firestore: ^0.12.9+5
   cloud_firestore: ^0.14.1+3
@@ -48,7 +49,8 @@ dependencies:
   intl: ^0.16.1
   expandable: ^4.1.4
   badges: ^1.1.4
-  # easy_localization: ^2.3.3
+  image_picker: ^0.6.7+14
+  easy_localization: ^2.3.3
 
 dev_dependencies:
   flutter_test:
@@ -66,7 +68,9 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/langs/
     - assets/
+    
 
   fonts:
     - family: poppins

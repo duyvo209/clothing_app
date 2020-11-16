@@ -20,9 +20,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   ) async* {
     if (event is NewOrderEvent) {
       try {
+        print('NewOrderEvent...');
         yield state.copyWith(
           orderLoading: true,
-          orderSuccess: false,
+          orderSuccess: true,
           orderError: '',
         );
 
@@ -39,11 +40,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           orderError: e.toString(),
         );
       }
+
+      /*
       yield state.copyWith(
         orderLoading: false,
         orderSuccess: false,
         orderError: '',
-      );
+      );*/
     }
   }
 }

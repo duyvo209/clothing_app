@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 double getTotalPrice(List<Cart> carts) {
   return carts
@@ -143,7 +144,7 @@ class _CartPageState extends State<CartPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Shopping Cart",
+                  "Shopping Cart".tr().toString(),
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -355,7 +356,7 @@ class _CartPageState extends State<CartPage> {
                     ),
                     Text.rich(
                       TextSpan(
-                        text: "Total:\n",
+                        text: "Total".tr().toString() + "\n",
                         style: TextStyle(fontSize: 15),
                         children: [
                           if (state.cart.isNotEmpty)
@@ -394,7 +395,7 @@ class _CartPageState extends State<CartPage> {
                         textColor: Colors.white,
                         color: Colors.blueGrey[800],
                         child: Text(
-                          'Check Out',
+                          'Check Out'.tr().toString(),
                           style: TextStyle(fontSize: 15),
                         ),
                       ),
@@ -459,9 +460,9 @@ class _CartPageState extends State<CartPage> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          "Check Out",
+                                          "Check Out".tr().toString(),
                                           style: TextStyle(
-                                            color: Colors.grey[700],
+                                            color: Colors.black,
                                             fontSize: 20,
                                           ),
                                           textAlign: TextAlign.center,
@@ -471,7 +472,7 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                   Text.rich(
                                     TextSpan(
-                                      text: "Total: ",
+                                      text: "Total".tr().toString() + " ",
                                       style: TextStyle(fontSize: 15),
                                       children: [
                                         if (state.cart.isNotEmpty)
@@ -492,13 +493,17 @@ class _CartPageState extends State<CartPage> {
                                       ],
                                     ),
                                   ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
                                   Container(
                                     padding: EdgeInsets.all(10),
                                     child: TextFormField(
                                       controller: _fullnameController,
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
-                                        labelText: "Full Name",
+                                        border: OutlineInputBorder(),
+                                        labelText: "Full Name".tr().toString(),
                                         hintStyle:
                                             TextStyle(color: Colors.grey),
                                       ),
@@ -510,7 +515,9 @@ class _CartPageState extends State<CartPage> {
                                       controller: _phoneController,
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
-                                        labelText: "Phone Number",
+                                        border: OutlineInputBorder(),
+                                        labelText:
+                                            "Phone Number".tr().toString(),
                                         hintStyle:
                                             TextStyle(color: Colors.grey),
                                       ),
@@ -522,7 +529,8 @@ class _CartPageState extends State<CartPage> {
                                       controller: _addressController,
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
-                                        labelText: "Address",
+                                        border: OutlineInputBorder(),
+                                        labelText: "Address".tr().toString(),
                                         hintStyle:
                                             TextStyle(color: Colors.grey),
                                       ),
@@ -533,6 +541,9 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                   BlocListener<OrderBloc, OrderState>(
                                     listener: (context, state) {
+                                      print(
+                                          'order state.orderSuccess=${state.orderSuccess}'
+                                          ' state.error="${state.orderError}"');
                                       if (state.orderSuccess == true) {
                                         BlocProvider.of<CartBloc>(context).add(
                                           ClearAllCart(user.uid),
@@ -573,7 +584,7 @@ class _CartPageState extends State<CartPage> {
                                         textColor: Colors.white,
                                         color: Colors.blueGrey[800],
                                         child: Text(
-                                          'BUY',
+                                          'Buy'.tr().toString(),
                                           style: TextStyle(fontSize: 15),
                                         ),
                                       ),
