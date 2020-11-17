@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(EvaIcons.messageCircleOutline),
+            icon: Icon(EvaIcons.messageSquareOutline),
             onPressed: () {},
           ),
           user != null
@@ -94,18 +94,30 @@ class _HomePageState extends State<HomePage> {
                   builder: (_, snapshot) {
                     if (snapshot.data != null) {
                       int quantity = snapshot.data.docs.length;
-                      return Badge(
-                        badgeContent: Text(
-                          "$quantity",
-                          style: TextStyle(
-                            color: Colors.white,
+                      if (quantity != 0) {
+                        return Badge(
+                          badgeContent: Text(
+                            "$quantity",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        badgeColor: Colors.red[600],
-                        shape: BadgeShape.circle,
-                        position: BadgePosition.topStart(start: 25, top: 2.5),
-                        animationType: BadgeAnimationType.scale,
-                        child: IconButton(
+                          badgeColor: Colors.red[600],
+                          shape: BadgeShape.circle,
+                          position: BadgePosition.topStart(start: 25, top: 2.5),
+                          animationType: BadgeAnimationType.scale,
+                          child: IconButton(
+                            icon: Icon(EvaIcons.shoppingCartOutline),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  new MaterialPageRoute(
+                                      builder: (context) => new CartPage()));
+                            },
+                          ),
+                        );
+                      } else {
+                        return IconButton(
                           icon: Icon(EvaIcons.shoppingCartOutline),
                           onPressed: () {
                             Navigator.push(
@@ -113,8 +125,8 @@ class _HomePageState extends State<HomePage> {
                                 new MaterialPageRoute(
                                     builder: (context) => new CartPage()));
                           },
-                        ),
-                      );
+                        );
+                      }
                     }
                     return Container();
                   })
