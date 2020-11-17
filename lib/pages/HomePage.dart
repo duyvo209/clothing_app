@@ -80,6 +80,10 @@ class _HomePageState extends State<HomePage> {
           icon: Icon(EvaIcons.menuOutline),
         ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(EvaIcons.messageCircleOutline),
+            onPressed: () {},
+          ),
           user != null
               ? StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance

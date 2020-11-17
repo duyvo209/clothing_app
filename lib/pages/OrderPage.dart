@@ -81,55 +81,68 @@ class _OrderPageState extends State<OrderPage> {
                           child: Text(
                             "${order.idOrder}",
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.blueGrey[600]),
+                            style: TextStyle(
+                              color: Colors.blueGrey[600],
+                              height: 2.4,
+                            ),
                           ),
                           height: 50,
                         ),
-                        expanded: Column(
-                            children: List.generate(products.length, (i) {
-                          var product = products[i];
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "Order Date".tr().toString() +
-                                        ": ${DateFormat('dd-MM-yyyy').format(order.dateTime)}",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                      "Products".tr().toString() +
-                                          ": ${product.product.productName} (${product.quantity})",
-                                      textAlign: TextAlign.center),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                      "Total".tr().toString() +
-                                          " ${order.total}\$",
-                                      textAlign: TextAlign.center),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                      "Status".tr().toString() +
-                                          ": ${order.status}",
-                                      textAlign: TextAlign.center),
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                ],
+                        expanded: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          margin: EdgeInsets.only(left: 36.0, right: 36.0),
+                          child: Column(
+                              children: List.generate(products.length, (i) {
+                            var product = products[i];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      "Order Date".tr().toString() +
+                                          ": ${DateFormat('dd-MM-yyyy').format(order.dateTime)}",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                        "Products".tr().toString() +
+                                            ": ${product.product.productName} (${product.quantity})",
+                                        textAlign: TextAlign.center),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                        "Total".tr().toString() +
+                                            " ${order.total}\$",
+                                        textAlign: TextAlign.center),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                        "Status".tr().toString() +
+                                            ": ${order.status}",
+                                        textAlign: TextAlign.center),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        })),
+                            );
+                          })),
+                        ),
                       );
                     } else {
                       return Container();

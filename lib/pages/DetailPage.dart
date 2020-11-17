@@ -173,10 +173,13 @@ class _DetailPageState extends State<DetailPage> {
                             margin: EdgeInsets.symmetric(
                               horizontal: 5.0,
                             ),
-                            width: _selectedPage == i ? 35.0 : 10.0,
+                            width: _selectedPage == i ? 30.0 : 10.0,
                             height: 10.0,
                             decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.2),
+                                // color: Colors.black.withOpacity(0.2),
+                                color: _selectedPage == i
+                                    ? Colors.black
+                                    : Colors.black.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(12.0)),
                           ),
                       ],
