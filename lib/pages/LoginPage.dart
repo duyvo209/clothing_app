@@ -101,6 +101,8 @@ class _LoginPageState extends State<LoginPage> {
       child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
         return LoadingOverlay(
           isLoading: state.loginLoading,
+          opacity: 0.5,
+          color: Colors.transparent,
           child: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();

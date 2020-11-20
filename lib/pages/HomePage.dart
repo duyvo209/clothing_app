@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duyvo/blocs/login/login_bloc.dart';
 import 'package:duyvo/blocs/new_arrivals/new_arrivals_bloc.dart';
 import 'package:duyvo/pages/CartPage.dart';
+import 'package:duyvo/pages/ChatPage.dart';
 import 'package:duyvo/pages/SearchPage.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -82,7 +83,10 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(EvaIcons.messageSquareOutline),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                  new MaterialPageRoute(builder: (context) => new ChatPage()));
+            },
           ),
           user != null
               ? StreamBuilder<QuerySnapshot>(

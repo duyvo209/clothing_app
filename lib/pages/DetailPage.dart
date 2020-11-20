@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duyvo/blocs/login/login_bloc.dart';
 import 'package:duyvo/blocs/products/products_bloc.dart';
+import 'package:duyvo/models/Cart.dart';
 import 'package:duyvo/models/Product.dart';
 import 'package:duyvo/pages/CartPage.dart';
 import 'package:duyvo/pages/LoginPage.dart';
@@ -33,7 +34,6 @@ class _DetailPageState extends State<DetailPage> {
   int _selectedPage = 0;
 
   var user;
-  var cart;
 
   void _add() {
     setState(() {
@@ -176,14 +176,16 @@ class _DetailPageState extends State<DetailPage> {
                     ],
                   ),
                   Positioned(
-                    bottom: 20.0,
+                    bottom: 0,
                     left: 0,
                     right: 0,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         for (var i = 0; i < widget.product.picture.length; i++)
-                          Container(
+                          AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeOutCubic,
                             margin: EdgeInsets.symmetric(
                               horizontal: 5.0,
                             ),
@@ -333,15 +335,46 @@ class _DetailPageState extends State<DetailPage> {
                         var user =
                             BlocProvider.of<LoginBloc>(context).state.user;
                         if (user != null) {
-                          await FirebaseFirestore.instance
+                          var query = await FirebaseFirestore.instance
                               .collection('users')
                               .doc(user.uid)
-                              .collection("cart")
-                              .add({
-                            "product": widget.product.toMap(),
-                            "quantity": _count,
-                            "size": currentSize.index,
-                          });
+                              .collection('cart')
+                              .get();
+                          var listCart = query.docs
+                              .map((e) => Cart.fromFireStore(e.data()))
+                              .toList();
+
+                          var checkSize = listCart.any((element) =>
+                              element.product.id == widget.product.id &&
+                              currentSize.index == element.size);
+                          if (checkSize) {
+                            var path = query.docs.firstWhere((element) {
+                              var product = Product.fromFireStore(
+                                  element.data()['product']);
+                              if (product.id == widget.product.id) {
+                                return true;
+                              }
+                              return false;
+                            });
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user.uid)
+                                .collection('cart')
+                                .doc(path.id)
+                                .update({
+                              'quantity': path.data()['quantity'] + _count
+                            });
+                          } else {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user.uid)
+                                .collection('cart')
+                                .add({
+                              'product': widget.product.toMap(),
+                              'quantity': _count,
+                              'size': currentSize.index,
+                            });
+                          }
                           showSnackBar.currentState.showSnackBar(_snackBar);
                         } else {
                           Navigator.push(

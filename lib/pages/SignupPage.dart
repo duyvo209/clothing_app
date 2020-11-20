@@ -130,7 +130,7 @@ class _SignupPageState extends State<SignupPage> {
       Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child(fileName);
       UploadTask uploadTask = firebaseStorageRef.putFile(_image);
-      // TaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      TaskSnapshot taskSnapshot = await uploadTask; //.onComplete;
       setState(() {
         print("Profile Picture uploaded");
         Scaffold.of(context)
@@ -147,6 +147,8 @@ class _SignupPageState extends State<SignupPage> {
       builder: (context, state) {
         return LoadingOverlay(
           isLoading: state.registerLoading,
+          opacity: 0.5,
+          color: Colors.transparent,
           child: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();

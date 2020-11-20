@@ -104,13 +104,14 @@ class _OrderPageState extends State<OrderPage> {
                                 alignment: Alignment.center,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     SizedBox(
                                       height: 20,
                                     ),
                                     Text(
                                       "Order Date".tr().toString() +
-                                          ": ${DateFormat('dd-MM-yyyy').format(order.dateTime)}",
+                                          ": ${DateFormat('dd-MM-yyyy  hh:mm').format(order.dateTime)}",
                                       textAlign: TextAlign.center,
                                     ),
                                     SizedBox(
