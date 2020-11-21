@@ -31,6 +31,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             'firstname': event.firstname,
             'lastname': event.lastname,
             'email': event.email,
+            'imageUser': event.imageUser,
           });
           yield state.copyWith(registerLoading: false, registerSuccess: true);
         }

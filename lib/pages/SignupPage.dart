@@ -32,6 +32,7 @@ class _SignupPageState extends State<SignupPage> {
   String email = '';
   String password = '';
   String retypepassword = '';
+  String imageUser = '';
   bool isFirstTime = true;
   File _image;
 
@@ -130,12 +131,13 @@ class _SignupPageState extends State<SignupPage> {
       Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child(fileName);
       UploadTask uploadTask = firebaseStorageRef.putFile(_image);
-      TaskSnapshot taskSnapshot = await uploadTask; //.onComplete;
+      TaskSnapshot taskSnapshot = await uploadTask;
+      var downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      String url = downloadUrl.toString();
       setState(() {
         print("Profile Picture uploaded");
-        Scaffold.of(context)
-            .showSnackBar(SnackBar(content: Text('Profile Picture Uploaded')));
       });
+      return url;
     }
 
     return BlocListener<RegisterBloc, RegisterState>(listener: (_, state) {
@@ -363,17 +365,19 @@ class _SignupPageState extends State<SignupPage> {
                                   height: 40,
                                 ),
                                 GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
                                     setState(() {
                                       isFirstTime = false;
                                     });
-                                    BlocProvider.of<RegisterBloc>(context).add(
-                                      Register(
-                                          firstname: _firstnameController.text,
-                                          lastname: _lastnameController.text,
-                                          email: _emailController.text,
-                                          password: _passwordController.text),
-                                    );
+                                    final url = await uploadPic(context);
+                                    BlocProvider.of<RegisterBloc>(context)
+                                        .add(Register(
+                                      firstname: _firstnameController.text,
+                                      lastname: _lastnameController.text,
+                                      email: _emailController.text,
+                                      password: _passwordController.text,
+                                      imageUser: url,
+                                    ));
                                     uploadPic(context);
                                   },
                                   child: Container(

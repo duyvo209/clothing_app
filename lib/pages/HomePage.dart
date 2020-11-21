@@ -181,8 +181,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                           currentAccountPicture: ClipRRect(
                             borderRadius: BorderRadius.circular(70),
-                            child: Image.asset(
-                              "assets/nancy.jpg",
+                            child: CachedNetworkImage(
+                              imageUrl: "${data['imageUser']}",
                               width: 70,
                               height: 70,
                               fit: BoxFit.cover,

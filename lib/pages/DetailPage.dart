@@ -151,7 +151,6 @@ class _DetailPageState extends State<DetailPage> {
             Container(
               height: 400,
               child: Stack(
-                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   PageView(
                     onPageChanged: (num) {
