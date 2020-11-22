@@ -14,4 +14,6 @@ class Login extends LoginEvent {
   Login({@required this.email, @required this.password});
 }
 
+class LoginWithFacebook extends LoginEvent {}
+
 class LogOut extends LoginEvent {}

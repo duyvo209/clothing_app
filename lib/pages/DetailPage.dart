@@ -339,6 +339,7 @@ class _DetailPageState extends State<DetailPage> {
                               .doc(user.uid)
                               .collection('cart')
                               .get();
+
                           var listCart = query.docs
                               .map((e) => Cart.fromFireStore(e.data()))
                               .toList();
@@ -346,6 +347,7 @@ class _DetailPageState extends State<DetailPage> {
                           var checkSize = listCart.any((element) =>
                               element.product.id == widget.product.id &&
                               currentSize.index == element.size);
+
                           if (checkSize) {
                             var path = query.docs.firstWhere((element) {
                               var product = Product.fromFireStore(

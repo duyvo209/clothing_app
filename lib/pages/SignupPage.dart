@@ -126,7 +126,7 @@ class _SignupPageState extends State<SignupPage> {
       });
     }
 
-    Future uploadPic(BuildContext context) async {
+    Future uploadPic() async {
       String fileName = basename(_image.path);
       Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child(fileName);
@@ -369,7 +369,7 @@ class _SignupPageState extends State<SignupPage> {
                                     setState(() {
                                       isFirstTime = false;
                                     });
-                                    final url = await uploadPic(context);
+                                    final url = await uploadPic();
                                     BlocProvider.of<RegisterBloc>(context)
                                         .add(Register(
                                       firstname: _firstnameController.text,
@@ -378,7 +378,7 @@ class _SignupPageState extends State<SignupPage> {
                                       password: _passwordController.text,
                                       imageUser: url,
                                     ));
-                                    uploadPic(context);
+                                    uploadPic();
                                   },
                                   child: Container(
                                     height: 50,

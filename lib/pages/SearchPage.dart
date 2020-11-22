@@ -26,7 +26,7 @@ class _SearchPageState extends State<SearchPage> {
             hintText: "Search".tr().toString(),
             onSubmitted: (value) {
               setState(() {
-                _searchString = value.toLowerCase();
+                _searchString = value.substring(0, 1).toLowerCase();
               });
             },
           ),

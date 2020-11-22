@@ -1,11 +1,9 @@
 import 'package:duyvo/blocs/login/login_bloc.dart';
 import 'package:duyvo/pages/HomePage.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:duyvo/pages/SignupPage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -262,20 +260,10 @@ class _LoginPageState extends State<LoginPage> {
                                     Expanded(
                                       child: GestureDetector(
                                         onTap: () async {
-                                          final LoginResult result =
-                                              await FacebookAuth.instance
-                                                  .login();
-
-                                          // Create a credential from the access token
-                                          final FacebookAuthCredential
-                                              facebookAuthCredential =
-                                              FacebookAuthProvider.credential(
-                                                  result.accessToken.token);
-
-                                          // Once signed in, return the UserCredential
-                                          return await FirebaseAuth.instance
-                                              .signInWithCredential(
-                                                  facebookAuthCredential);
+                                          BlocProvider.of<LoginBloc>(context)
+                                              .add(
+                                            LoginWithFacebook(),
+                                          );
                                         },
                                         child: Container(
                                           height: 50,
