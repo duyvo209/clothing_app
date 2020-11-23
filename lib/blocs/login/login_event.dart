@@ -16,4 +16,6 @@ class Login extends LoginEvent {
 
 class LoginWithFacebook extends LoginEvent {}
 
+class LoginWithPhoneNumber extends LoginEvent {}
+
 class LogOut extends LoginEvent {}

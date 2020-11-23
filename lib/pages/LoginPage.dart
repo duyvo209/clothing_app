@@ -1,6 +1,8 @@
 import 'package:duyvo/blocs/login/login_bloc.dart';
 import 'package:duyvo/pages/HomePage.dart';
+import 'package:duyvo/pages/LoginWithPhone.dart';
 import 'package:email_validator/email_validator.dart';
+
 import 'package:flutter/material.dart';
 import 'package:duyvo/pages/SignupPage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -286,18 +288,27 @@ class _LoginPageState extends State<LoginPage> {
                                       width: 30,
                                     ),
                                     Expanded(
-                                      child: Container(
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            color: Colors.blueGrey[800]),
-                                        child: Center(
-                                          child: Text(
-                                            "Phone",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoginWithPhone()));
+                                        },
+                                        child: Container(
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              color: Colors.blueGrey[800]),
+                                          child: Center(
+                                            child: Text(
+                                              "Phone",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
                                         ),
                                       ),

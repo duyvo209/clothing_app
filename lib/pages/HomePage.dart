@@ -8,6 +8,7 @@ import 'package:duyvo/pages/ChatPage.dart';
 import 'package:duyvo/pages/SearchPage.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:duyvo/pages/CollectionPage.dart';
@@ -20,6 +21,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class HomePage extends StatefulWidget {
+  final User user;
+  HomePage({this.user});
+
   @override
   _HomePageState createState() => _HomePageState();
 }

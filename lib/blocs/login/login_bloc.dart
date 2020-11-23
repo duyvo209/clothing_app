@@ -81,8 +81,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             'email': data.user.email,
             'imageUser': data.user.photoURL,
           });
-          yield state.copyWith(loginLoading: false, loginSuccess: true, user: data.user);
+          yield state.copyWith(
+              loginLoading: false, loginSuccess: true, user: data.user);
         }
+      } catch (e) {
+        yield state.copyWith(
+          loginError: e.toString(),
+          loginLoading: false,
+          loginSuccess: false,
+        );
+      }
+    }
+
+    if (event is LoginWithPhoneNumber) {
+      try {
+        yield state.copyWith(
+          loginLoading: true,
+          loginSuccess: false,
+          loginError: '',
+        );
       } catch (e) {
         yield state.copyWith(
           loginError: e.toString(),
