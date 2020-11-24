@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:duyvo/blocs/authentication/authencation_bloc.dart';
+import 'package:duyvo/utils/constants.dart';
+import 'package:duyvo/utils/local_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
@@ -11,7 +14,8 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginState.empty());
+  AuthencationBloc authencationBloc;
+  LoginBloc(this.authencationBloc) : super(LoginState.empty());
   final firebaseAuth = FirebaseAuth.instance;
 
   @override
@@ -29,8 +33,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             email: event.email, password: event.password);
 
         if (result != null) {
+          await LocalStorage().setUserPass(event.email, event.password);
+          await LocalStorage().setLoginMethod(Constants.LOGIN_WITH_EMAIL);
+
           yield state.copyWith(
               loginLoading: false, loginSuccess: true, user: result.user);
+          authencationBloc.add(LoggedIn());
         }
       } on FirebaseAuthException catch (e) {
         yield state.copyWith(
@@ -46,6 +54,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           logoutLoading: true,
         );
         await firebaseAuth.signOut();
+        authencationBloc.add(LoggedOut());
         yield state.copyWithUser(null);
       } catch (e) {
         yield state.copyWith(

@@ -94,8 +94,7 @@ class _LoginPageState extends State<LoginPage> {
               });
         }
         if (state.loginSuccess) {
-          Navigator.push(context,
-              new MaterialPageRoute(builder: (context) => new HomePage()));
+          Navigator.popUntil(context, (route) => route.isFirst);
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {

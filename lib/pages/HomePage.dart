@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:duyvo/blocs/authentication/authencation_bloc.dart';
 import 'package:duyvo/blocs/login/login_bloc.dart';
 import 'package:duyvo/blocs/new_arrivals/new_arrivals_bloc.dart';
 import 'package:duyvo/pages/CartPage.dart';
@@ -153,50 +154,37 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-              // LoadingOverlay(
-              //     isLoading: state.loginLoading,
-              //     child: state.user != null ? StreamBuilder() : Container());
-              if (state.user != null) {
-                return StreamBuilder<DocumentSnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(state.user.uid)
-                        .snapshots(),
-                    builder: (_, snapshot) {
-                      if (snapshot.data != null) {
-                        var data = snapshot.data;
-                        return UserAccountsDrawerHeader(
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          accountEmail: Text(
-                            "${data['email']}",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          accountName: Text(
-                            "${data['lastname']} ${data['firstname']}",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          currentAccountPicture: ClipRRect(
-                            borderRadius: BorderRadius.circular(70),
-                            child: CachedNetworkImage(
-                              imageUrl: "${data['imageUser']}",
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    });
+            BlocBuilder<AuthencationBloc, AuthencationState>(
+                builder: (_, state) {
+              if (state is AuthenticationAuthenticated) {
+                var user = state.user;
+                return UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  accountEmail: Text(
+                    "${user.email}",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  accountName: Text(
+                    "${user.displayName}",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  currentAccountPicture: ClipRRect(
+                    borderRadius: BorderRadius.circular(70),
+                    child: CachedNetworkImage(
+                      imageUrl: "${user.photoURL}",
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
               }
               return Container();
             }),
@@ -295,77 +283,69 @@ class _HomePageState extends State<HomePage> {
               leading: Icon(EvaIcons.infoOutline),
             ),
             SizedBox(height: 10),
-            BlocBuilder<LoginBloc, LoginState>(
-              builder: (context, state) {
-                if (state.user == null) {
-                  return ListTile(
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => new LoginPage()));
-                    },
-                    title: Text(
-                      "Login".tr().toString(),
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    leading: Icon(EvaIcons.personOutline),
-                    //Icon(),
-                  );
-                } else {
-                  return ListTile(
-                    onTap: () async {
-                      showDialog(
-                          context: context,
-                          builder: (_) {
-                            return SimpleDialog(
-                              title: Text("Success",
-                                  style: TextStyle(color: Colors.green[600])),
-                              children: [
-                                SizedBox(
-                                  height: 1,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 25, right: 20),
-                                  child: Text("You was logged out !"),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                RaisedButton(
-                                  onPressed: () {
-                                    BlocProvider.of<LoginBloc>(context).add(
-                                      LogOut(),
-                                    );
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => HomePage(),
-                                        ));
-                                  },
-                                  padding: EdgeInsets.only(left: 50, right: 50),
-                                  child: Container(
-                                    child: Icon(
-                                      Icons.check_outlined,
-                                      color: Colors.white,
-                                    ),
+            BlocBuilder<AuthencationBloc, AuthencationState>(
+                builder: (_, state) {
+              if (state is AuthenticationAuthenticated) {
+                return ListTile(
+                  onTap: () async {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return SimpleDialog(
+                            title: Text("Success",
+                                style: TextStyle(color: Colors.green[600])),
+                            children: [
+                              SizedBox(
+                                height: 1,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 25, right: 20),
+                                child: Text("You was logged out !"),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              RaisedButton(
+                                onPressed: () {
+                                  BlocProvider.of<AuthencationBloc>(context)
+                                      .add(LoggedOut());
+                                  Navigator.pop(context);
+                                },
+                                padding: EdgeInsets.only(left: 50, right: 50),
+                                child: Container(
+                                  child: Icon(
+                                    Icons.check_outlined,
+                                    color: Colors.white,
                                   ),
-                                  color: Colors.blueGrey[800],
                                 ),
-                              ],
-                            );
-                          });
-                    },
-                    title: Text(
-                      "Logout".tr().toString(),
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    leading: Icon(EvaIcons.personOutline),
-                  );
-                }
-              },
-            ),
+                                color: Colors.blueGrey[800],
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  title: Text(
+                    "Logout".tr().toString(),
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  leading: Icon(EvaIcons.personOutline),
+                );
+              }
+              return ListTile(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new LoginPage()));
+                },
+                title: Text(
+                  "Login".tr().toString(),
+                  style: TextStyle(fontSize: 16),
+                ),
+                leading: Icon(EvaIcons.personOutline),
+                //Icon(),
+              );
+            }),
             SizedBox(height: 10),
             ExpansionTile(
               title: Text(
