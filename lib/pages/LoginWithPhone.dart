@@ -1,8 +1,7 @@
 import 'package:duyvo/pages/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:duyvo/pages/Phone.dart';
-import 'package:international_phone_input/international_phone_input.dart';
+// import 'package:international_phone_input/international_phone_input.dart';
 
 // ignore: must_be_immutable
 class LoginWithPhone extends StatelessWidget {
@@ -134,15 +133,22 @@ class LoginWithPhone extends StatelessWidget {
                     hintText: "Mobile Number"),
                 controller: _phoneController,
               ),
-
               // InternationalPhoneInput(
-              //     decoration: InputDecoration.collapsed(
-              //         hintText: 'Enter Phone Numbers'),
-              //     onPhoneNumberChange: onPhoneNumberChange,
-              //     initialPhoneNumber: phoneNumber,
-              //     initialSelection: 'VN',
-              //     showCountryCodes: true),
-
+              //   decoration: InputDecoration(
+              //       enabledBorder: OutlineInputBorder(
+              //           borderRadius: BorderRadius.all(Radius.circular(8)),
+              //           borderSide: BorderSide(color: Colors.grey[200])),
+              //       focusedBorder: OutlineInputBorder(
+              //           borderRadius: BorderRadius.all(Radius.circular(8)),
+              //           borderSide: BorderSide(color: Colors.grey[300])),
+              //       filled: true,
+              //       fillColor: Colors.grey[100],
+              //       hintText: "Mobile Number"),
+              //   onPhoneNumberChange: onPhoneNumberChange,
+              //   initialPhoneNumber: phoneNumber,
+              //   initialSelection: 'VN',
+              //   showCountryCodes: true,
+              // ),
               SizedBox(
                 height: 16,
               ),

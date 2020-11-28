@@ -1,8 +1,6 @@
 import 'package:duyvo/blocs/login/login_bloc.dart';
-import 'package:duyvo/pages/HomePage.dart';
 import 'package:duyvo/pages/LoginWithPhone.dart';
 import 'package:email_validator/email_validator.dart';
-
 import 'package:flutter/material.dart';
 import 'package:duyvo/pages/SignupPage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,8 +92,7 @@ class _LoginPageState extends State<LoginPage> {
               });
         }
         if (state.loginSuccess) {
-          Navigator.push(context,
-              new MaterialPageRoute(builder: (context) => new HomePage()));
+          Navigator.popUntil(context, (route) => route.isFirst);
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {

@@ -55,6 +55,7 @@ dependencies:
   flutter_google_places: ^0.2.6
   http: ^0.12.2
   international_phone_input: ^1.0.4
+  flutter_secure_storage: ^3.3.5
 
 
 dev_dependencies:

@@ -1,8 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duyvo/blocs/login/login_bloc.dart';
+import 'package:duyvo/blocs/cart/cart_bloc.dart';
 import 'package:duyvo/blocs/new_arrivals/new_arrivals_bloc.dart';
+import 'package:duyvo/blocs/user/user_bloc.dart';
 import 'package:duyvo/pages/CartPage.dart';
 import 'package:duyvo/pages/ChatPage.dart';
 import 'package:duyvo/pages/SearchPage.dart';
@@ -19,6 +21,7 @@ import 'package:duyvo/pages/ShirtPage.dart';
 import 'package:duyvo/pages/JeansPage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:duyvo/blocs/authencation/authencation_bloc.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -92,53 +95,36 @@ class _HomePageState extends State<HomePage> {
                   new MaterialPageRoute(builder: (context) => new ChatPage()));
             },
           ),
-          user != null
-              ? StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(user.uid)
-                      .collection('cart')
-                      .snapshots(),
-                  builder: (_, snapshot) {
-                    if (snapshot.data != null) {
-                      int quantity = snapshot.data.docs.length;
-                      if (quantity != 0) {
-                        return Badge(
-                          badgeContent: Text(
-                            "$quantity",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          badgeColor: Colors.red[600],
-                          shape: BadgeShape.circle,
-                          position: BadgePosition.topStart(start: 25, top: 2.5),
-                          animationType: BadgeAnimationType.scale,
-                          child: IconButton(
-                            icon: Icon(EvaIcons.shoppingCartOutline),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  new MaterialPageRoute(
-                                      builder: (context) => new CartPage()));
-                            },
-                          ),
-                        );
-                      } else {
-                        return IconButton(
-                          icon: Icon(EvaIcons.shoppingCartOutline),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                new MaterialPageRoute(
-                                    builder: (context) => new CartPage()));
-                          },
-                        );
-                      }
-                    }
-                    return Container();
-                  })
-              : IconButton(
+
+          BlocBuilder<AuthencationBloc, AuthencationState>(
+              builder: (context, authState) {
+            return BlocBuilder<CartBloc, CartState>(
+                builder: (context, cartState) {
+              if (cartState.cart.isNotEmpty) {
+                return Badge(
+                  showBadge: authState is AuthenticationAuthenticated,
+                  badgeContent: Text(
+                    '${cartState.cart.length}',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  badgeColor: Colors.red[600],
+                  shape: BadgeShape.circle,
+                  position: BadgePosition.topStart(start: 25, top: 2.5),
+                  animationType: BadgeAnimationType.scale,
+                  child: IconButton(
+                    icon: Icon(EvaIcons.shoppingCartOutline),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => new CartPage()));
+                    },
+                  ),
+                );
+              } else {
+                return IconButton(
                   icon: Icon(EvaIcons.shoppingCartOutline),
                   onPressed: () {
                     Navigator.push(
@@ -146,57 +132,106 @@ class _HomePageState extends State<HomePage> {
                         new MaterialPageRoute(
                             builder: (context) => new CartPage()));
                   },
-                ),
+                );
+              }
+            });
+          }),
+
+          // user != null
+          //     ? StreamBuilder<QuerySnapshot>(
+          //         stream: FirebaseFirestore.instance
+          //             .collection('users')
+          //             .doc(user.uid)
+          //             .collection('cart')
+          //             .snapshots(),
+          //         builder: (_, snapshot) {
+          //           if (snapshot.data != null) {
+          //             int quantity = snapshot.data.docs.length;
+          //             if (quantity != 0) {
+          //               return Badge(
+          //                 badgeContent: Text(
+          //                   "$quantity",
+          //                   style: TextStyle(
+          //                     color: Colors.white,
+          //                   ),
+          //                 ),
+          //                 badgeColor: Colors.red[600],
+          //                 shape: BadgeShape.circle,
+          //                 position: BadgePosition.topStart(start: 25, top: 2.5),
+          //                 animationType: BadgeAnimationType.scale,
+          //                 child: IconButton(
+          //                   icon: Icon(EvaIcons.shoppingCartOutline),
+          //                   onPressed: () {
+          //                     Navigator.push(
+          //                         context,
+          //                         new MaterialPageRoute(
+          //                             builder: (context) => new CartPage()));
+          //                   },
+          //                 ),
+          //               );
+          //             } else {
+          //               return IconButton(
+          //                 icon: Icon(EvaIcons.shoppingCartOutline),
+          //                 onPressed: () {
+          //                   Navigator.push(
+          //                       context,
+          //                       new MaterialPageRoute(
+          //                           builder: (context) => new CartPage()));
+          //                 },
+          //               );
+          //             }
+          //           }
+          //           return Container();
+          //         })
+          //     : IconButton(
+          //         icon: Icon(EvaIcons.shoppingCartOutline),
+          //         onPressed: () {
+          //           Navigator.push(
+          //               context,
+          //               new MaterialPageRoute(
+          //                   builder: (context) => new CartPage()));
+          //         },
+          //       ),
         ],
       ),
       drawerEdgeDragWidth: 0,
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-              // LoadingOverlay(
-              //     isLoading: state.loginLoading,
-              //     child: state.user != null ? StreamBuilder() : Container());
-              if (state.user != null) {
-                return StreamBuilder<DocumentSnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(state.user.uid)
-                        .snapshots(),
-                    builder: (_, snapshot) {
-                      if (snapshot.data != null) {
-                        var data = snapshot.data;
-                        return UserAccountsDrawerHeader(
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          accountEmail: Text(
-                            "${data['email']}",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          accountName: Text(
-                            "${data['lastname']} ${data['firstname']}",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          currentAccountPicture: ClipRRect(
-                            borderRadius: BorderRadius.circular(70),
-                            child: CachedNetworkImage(
-                              imageUrl: "${data['imageUser']}",
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    });
+            BlocBuilder<AuthencationBloc, AuthencationState>(
+                builder: (_, state) {
+              if (state is AuthenticationAuthenticated) {
+                return BlocBuilder<UserBloc, UserState>(
+                  builder: (context, state) {
+                    return UserAccountsDrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      accountEmail: Text(
+                        "${state.user.email}",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      accountName: Text(
+                        "${state.user.lastname} ${state.user.firstname}",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      currentAccountPicture: ClipRRect(
+                        borderRadius: BorderRadius.circular(70),
+                        child: CachedNetworkImage(
+                          imageUrl: "${state.user.imageUser}",
+                          width: 70,
+                          height: 70,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  },
+                );
               }
               return Container();
             }),
@@ -295,77 +330,69 @@ class _HomePageState extends State<HomePage> {
               leading: Icon(EvaIcons.infoOutline),
             ),
             SizedBox(height: 10),
-            BlocBuilder<LoginBloc, LoginState>(
-              builder: (context, state) {
-                if (state.user == null) {
-                  return ListTile(
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => new LoginPage()));
-                    },
-                    title: Text(
-                      "Login".tr().toString(),
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    leading: Icon(EvaIcons.personOutline),
-                    //Icon(),
-                  );
-                } else {
-                  return ListTile(
-                    onTap: () async {
-                      showDialog(
-                          context: context,
-                          builder: (_) {
-                            return SimpleDialog(
-                              title: Text("Success",
-                                  style: TextStyle(color: Colors.green[600])),
-                              children: [
-                                SizedBox(
-                                  height: 1,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 25, right: 20),
-                                  child: Text("You was logged out !"),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                RaisedButton(
-                                  onPressed: () {
-                                    BlocProvider.of<LoginBloc>(context).add(
-                                      LogOut(),
-                                    );
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => HomePage(),
-                                        ));
-                                  },
-                                  padding: EdgeInsets.only(left: 50, right: 50),
-                                  child: Container(
-                                    child: Icon(
-                                      Icons.check_outlined,
-                                      color: Colors.white,
-                                    ),
+            BlocBuilder<AuthencationBloc, AuthencationState>(
+                builder: (_, state) {
+              if (state is AuthenticationAuthenticated) {
+                return ListTile(
+                  onTap: () async {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return SimpleDialog(
+                            title: Text("Success",
+                                style: TextStyle(color: Colors.green[600])),
+                            children: [
+                              SizedBox(
+                                height: 1,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 25, right: 20),
+                                child: Text("You was logged out !"),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              RaisedButton(
+                                onPressed: () {
+                                  BlocProvider.of<AuthencationBloc>(context)
+                                      .add(LoggedOut());
+                                  Navigator.pop(context);
+                                },
+                                padding: EdgeInsets.only(left: 50, right: 50),
+                                child: Container(
+                                  child: Icon(
+                                    Icons.check_outlined,
+                                    color: Colors.white,
                                   ),
-                                  color: Colors.blueGrey[800],
                                 ),
-                              ],
-                            );
-                          });
-                    },
-                    title: Text(
-                      "Logout".tr().toString(),
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    leading: Icon(EvaIcons.personOutline),
-                  );
-                }
-              },
-            ),
+                                color: Colors.blueGrey[800],
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  title: Text(
+                    "Logout".tr().toString(),
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  leading: Icon(EvaIcons.personOutline),
+                );
+              }
+              return ListTile(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new LoginPage()));
+                },
+                title: Text(
+                  "Login".tr().toString(),
+                  style: TextStyle(fontSize: 16),
+                ),
+                leading: Icon(EvaIcons.personOutline),
+                //Icon(),
+              );
+            }),
             SizedBox(height: 10),
             ExpansionTile(
               title: Text(
@@ -480,7 +507,6 @@ class _HomePageState extends State<HomePage> {
       //     ),
       //   ),
       // ),
-
       body: Container(
         child: SingleChildScrollView(
           child: Column(

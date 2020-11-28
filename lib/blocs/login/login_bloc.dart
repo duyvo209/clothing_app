@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:duyvo/blocs/authencation/authencation_bloc.dart';
+import 'package:duyvo/utils/constants.dart';
+import 'package:duyvo/utils/local_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
@@ -11,7 +14,8 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginState.empty());
+  AuthencationBloc authencationBloc;
+  LoginBloc(this.authencationBloc) : super(LoginState.empty());
   final firebaseAuth = FirebaseAuth.instance;
 
   @override
@@ -29,8 +33,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             email: event.email, password: event.password);
 
         if (result != null) {
+          await LocalStorage().setUserPass(event.email, event.password);
+          await LocalStorage().setLoginMethod(Constants.LOGIN_WITH_EMAIL);
+
           yield state.copyWith(
               loginLoading: false, loginSuccess: true, user: result.user);
+          authencationBloc.add(LoggedIn());
         }
       } on FirebaseAuthException catch (e) {
         yield state.copyWith(
@@ -40,19 +48,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
       }
     }
-    if (event is LogOut) {
-      try {
-        yield state.copyWith(
-          logoutLoading: true,
-        );
-        await firebaseAuth.signOut();
-        yield state.copyWithUser(null);
-      } catch (e) {
-        yield state.copyWith(
-          logoutLoading: false,
-        );
-      }
-    }
+
     if (event is LoginWithFacebook) {
       try {
         yield state.copyWith(
@@ -108,18 +104,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
       }
     }
+
+    if (event is LogOut) {
+      try {
+        yield state.copyWith(
+          logoutLoading: true,
+        );
+        await firebaseAuth.signOut();
+        authencationBloc.add(LoggedOut());
+        yield state.copyWithUser(null);
+      } catch (e) {
+        yield state.copyWith(
+          logoutLoading: false,
+        );
+      }
+    }
   }
-
-  // Future<UserCredential> signInWithFacebook() async {
-  //   // Trigger the sign-in flow
-  //   final LoginResult result = await FacebookAuth.instance.login();
-
-  //   // Create a credential from the access token
-  //   final FacebookAuthCredential facebookAuthCredential =
-  //       FacebookAuthProvider.credential(result.accessToken.token);
-
-  //   // Once signed in, return the UserCredential
-  //   return await FirebaseAuth.instance
-  //       .signInWithCredential(facebookAuthCredential);
-  // }
 }
