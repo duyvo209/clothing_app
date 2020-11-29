@@ -68,6 +68,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         var data = await FirebaseAuth.instance
             .signInWithCredential(facebookAuthCredential);
         if (data != null) {
+          await LocalStorage().setLoginMethod(Constants.LOGIN_WITH_FB);
           await FirebaseFirestore.instance
               .collection('users')
               .doc(data.user.uid)
@@ -79,6 +80,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           });
           yield state.copyWith(
               loginLoading: false, loginSuccess: true, user: data.user);
+          authencationBloc.add(LoggedIn());
         }
       } catch (e) {
         yield state.copyWith(
