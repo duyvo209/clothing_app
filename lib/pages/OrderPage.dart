@@ -95,54 +95,83 @@ class _OrderPageState extends State<OrderPage> {
                           ),
                           margin: EdgeInsets.only(left: 36.0, right: 36.0),
                           child: Column(
-                              children: List.generate(products.length, (i) {
-                            var product = products[i];
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      "Order Date".tr().toString() +
-                                          ": ${DateFormat('dd-MM-yyyy  hh:mm').format(order.dateTime)}",
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                        "Products".tr().toString() +
-                                            ": ${product.product.productName} (${product.quantity})",
-                                        textAlign: TextAlign.center),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                        "Total".tr().toString() +
-                                            " ${order.total}\$",
-                                        textAlign: TextAlign.center),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                        "Status".tr().toString() +
-                                            ": ${order.status}",
-                                        textAlign: TextAlign.center),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                  ],
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Order Date".tr().toString() +
+                                              ": ${DateFormat('dd-MM-yyyy  hh:mm').format(order.dateTime)}",
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Products".tr().toString() + ":",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            );
-                          })),
+                              Column(
+                                  children: List.generate(products.length, (i) {
+                                var cart = products[i];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "${cart.product.productName} (${cart.quantity})",
+                                            textAlign: TextAlign.center),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              })),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                  "Total".tr().toString() + " ${order.total}\$",
+                                  textAlign: TextAlign.center),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                  "Status".tr().toString() +
+                                      ": ${order.status}",
+                                  textAlign: TextAlign.center),
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     } else {
