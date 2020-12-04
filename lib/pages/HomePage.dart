@@ -8,6 +8,7 @@ import 'package:duyvo/blocs/user/user_bloc.dart';
 import 'package:duyvo/pages/CartPage.dart';
 import 'package:duyvo/pages/ChatPage.dart';
 import 'package:duyvo/pages/SearchPage.dart';
+import 'package:duyvo/pages/theme_changer.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -409,7 +410,9 @@ class _HomePageState extends State<HomePage> {
                     leading: Icon(EvaIcons.bulbOutline),
                     children: <Widget>[
                       ListTile(
-                        onTap: () {},
+                        onTap: () {
+                          ThemeBuilder.of(context).changeTheme();
+                        },
                         title: Text(
                           "Light Theme".tr().toString(),
                           style: TextStyle(fontSize: 16),
@@ -418,7 +421,9 @@ class _HomePageState extends State<HomePage> {
                         //Icon(),
                       ),
                       ListTile(
-                        onTap: () {},
+                        onTap: () {
+                          ThemeBuilder.of(context).changeTheme();
+                        },
                         title: Text(
                           "Dark Theme".tr().toString(),
                           style: TextStyle(fontSize: 16),

@@ -178,7 +178,7 @@ class _OrderPageState extends State<OrderPage> {
                       return Container();
                     }
                   }),
-                ))
+                )),
               ],
             ),
           ),

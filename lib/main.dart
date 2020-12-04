@@ -7,6 +7,7 @@ import 'package:duyvo/blocs/products/products_bloc.dart';
 import 'package:duyvo/blocs/shirts/shirt_bloc.dart';
 import 'package:duyvo/blocs/tshirts/tshirt_bloc.dart';
 import 'package:duyvo/blocs/yourorder/yourorder_bloc.dart';
+import 'package:duyvo/pages/theme_changer.dart';
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:duyvo/pages/HomePage.dart';
@@ -94,34 +95,40 @@ class _MyAppState extends State<MyApp> {
               create: (context) =>
                   LoginBloc(BlocProvider.of<AuthencationBloc>(context))),
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            fontFamily: "poppins",
-            scaffoldBackgroundColor: Colors.white,
-            dividerColor: Colors.transparent,
-          ),
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          home: BlocBuilder<AuthencationBloc, AuthencationState>(
-            builder: (context, state) {
-              if (state is AuthencationLoading) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (state is AuthenticationAuthenticated ||
-                  state is AuthenticationUnauthenticated) {
-                return HomePage();
-              }
-              if (state is AuthenticationUnVerifyPhone) {
-                //return Verfiyh phone page;
-              }
-              return Container();
-            },
-          ),
-        ),
+        child: ThemeBuilder(
+            defaultBrightness: Brightness.light,
+            builder: (context, _brightness) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                theme: ThemeData(
+                  fontFamily: "poppins",
+                  scaffoldBackgroundColor: Colors.white,
+                  dividerColor: Colors.transparent,
+                  // primarySwatch: Colors.blue,
+                  brightness: _brightness,
+                ),
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+                home: BlocBuilder<AuthencationBloc, AuthencationState>(
+                  builder: (context, state) {
+                    if (state is AuthencationLoading) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (state is AuthenticationAuthenticated ||
+                        state is AuthenticationUnauthenticated) {
+                      return HomePage();
+                    }
+                    if (state is AuthenticationUnVerifyPhone) {
+                      //return Verfiyh phone page;
+                    }
+                    return Container();
+                  },
+                ),
+              );
+            }),
       ),
     );
   }
