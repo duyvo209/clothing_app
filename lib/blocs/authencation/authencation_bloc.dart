@@ -33,10 +33,10 @@ class AuthencationBloc extends Bloc<AuthencationEvent, AuthencationState> {
         String loginMethod = await LocalStorage().getLoginMethod();
         if (loginMethod != null) {
           if (loginMethod == Constants.LOGIN_WITH_FB) {
-            final LoginResult result = await FacebookAuth.instance.login();
+            final accessToken = await FacebookAuth.instance.isLogged;
 
             final FacebookAuthCredential facebookAuthCredential =
-                FacebookAuthProvider.credential(result.accessToken.token);
+                FacebookAuthProvider.credential(accessToken.token);
 
             var userCredential = await FirebaseAuth.instance
                 .signInWithCredential(facebookAuthCredential);
@@ -83,6 +83,7 @@ class AuthencationBloc extends Bloc<AuthencationEvent, AuthencationState> {
       try {
         yield AuthencationLoading();
         await LocalStorage().deleteUserData();
+        await FacebookAuth.instance.logOut();
         yield AuthencationState.empty();
         yield AuthenticationUnauthenticated();
       } catch (e) {
