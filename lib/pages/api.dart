@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-// import 'package:duyvo/models/province.dart';
 import 'package:duyvo/models/Address.dart';
 
 class Api {
