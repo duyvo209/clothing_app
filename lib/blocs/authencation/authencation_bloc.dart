@@ -84,7 +84,6 @@ class AuthencationBloc extends Bloc<AuthencationEvent, AuthencationState> {
         yield AuthencationLoading();
         await LocalStorage().deleteUserData();
         await FacebookAuth.instance.logOut();
-        yield AuthencationState.empty();
         yield AuthenticationUnauthenticated();
       } catch (e) {
         yield AuthenticationUnauthenticated();

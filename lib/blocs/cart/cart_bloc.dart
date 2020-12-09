@@ -16,6 +16,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Stream<CartState> mapEventToState(
     CartEvent event,
   ) async* {
+    if (event is ResetStateCart) {
+      yield CartState.empty();
+    }
     if (event is AddToCart) {
       try {
         var query = await FirebaseFirestore.instance

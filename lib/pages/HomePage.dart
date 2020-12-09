@@ -355,8 +355,10 @@ class _HomePageState extends State<HomePage> {
                               ),
                               RaisedButton(
                                 onPressed: () {
+                                  BlocProvider.of<AuthencationBloc>(context)
+                                      .add((LoggedOut()));
                                   BlocProvider.of<LoginBloc>(context)
-                                      .add((LogOut()));
+                                      .add(LogOut());
                                   Navigator.pop(context);
                                 },
                                 padding: EdgeInsets.only(left: 50, right: 50),

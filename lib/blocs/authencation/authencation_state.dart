@@ -1,16 +1,7 @@
 part of 'authencation_bloc.dart';
 
 class AuthencationState extends Equatable {
-  final List<Cart> cart;
-
-  AuthencationState({this.cart});
-
-  factory AuthencationState.empty() {
-    return AuthencationState(cart: []);
-  }
-
-  @override
-  List<Object> get props => [this.cart];
+  List<Object> get props => [];
 }
 
 class AuthencationInitial extends AuthencationState {}

@@ -27,3 +27,5 @@ class ClearAllCart extends CartEvent {
 
   ClearAllCart(this.userId);
 }
+
+class ResetStateCart extends CartEvent {}
