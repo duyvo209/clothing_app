@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:duyvo/blocs/cart/cart_bloc.dart';
 import 'package:duyvo/blocs/user/user_bloc.dart';
-import 'package:duyvo/models/Cart.dart';
 import 'package:duyvo/utils/constants.dart';
 import 'package:duyvo/utils/local_storage.dart';
 import 'package:equatable/equatable.dart';
