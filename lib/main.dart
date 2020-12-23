@@ -73,6 +73,7 @@ class _MyAppState extends State<MyApp> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: MultiBlocProvider(
         providers: [

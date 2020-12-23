@@ -24,15 +24,28 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           registerError: '',
           registerSuccess: false,
         );
-        var user = await firebaseAuth.createUserWithEmailAndPassword(
-            email: event.email, password: event.password);
-        if (user != null) {
-          await fireStore.collection('users').doc(user.user.uid).set({
+        if (event.uid != null) {
+          await fireStore.collection('users').doc(event.uid).set({
             'firstname': event.firstname,
             'lastname': event.lastname,
             'email': event.email,
             'imageUser': event.imageUser,
           });
+          yield state.copyWith(registerLoading: false, registerSuccess: true);
+          return;
+        } else {
+          var user = await firebaseAuth.createUserWithEmailAndPassword(
+              email: event.email, password: event.password);
+
+          if (user != null) {
+            await fireStore.collection('users').doc(user.user.uid).set({
+              'firstname': event.firstname,
+              'lastname': event.lastname,
+              'email': event.email,
+              'imageUser': event.imageUser,
+            });
+          }
+
           yield state.copyWith(registerLoading: false, registerSuccess: true);
         }
       } catch (e) {

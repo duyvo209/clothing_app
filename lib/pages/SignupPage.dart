@@ -11,7 +11,12 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 
 class SignupPage extends StatefulWidget {
+  final String uid;
   final String title = "Registration";
+  final bool isRegisterWithPhone;
+
+  const SignupPage({Key key, this.uid, this.isRegisterWithPhone = false})
+      : super(key: key);
   @override
   _SignupPageState createState() => _SignupPageState();
 }
@@ -370,14 +375,15 @@ class _SignupPageState extends State<SignupPage> {
                                       isFirstTime = false;
                                     });
                                     final url = await uploadPic();
-                                    BlocProvider.of<RegisterBloc>(context)
-                                        .add(Register(
-                                      firstname: _firstnameController.text,
-                                      lastname: _lastnameController.text,
-                                      email: _emailController.text,
-                                      password: _passwordController.text,
-                                      imageUser: url,
-                                    ));
+                                    BlocProvider.of<RegisterBloc>(context).add(
+                                        Register(
+                                            firstname:
+                                                _firstnameController.text,
+                                            lastname: _lastnameController.text,
+                                            email: _emailController.text,
+                                            password: _passwordController.text,
+                                            imageUser: url,
+                                            uid: widget.uid));
                                     uploadPic();
                                   },
                                   child: Container(
