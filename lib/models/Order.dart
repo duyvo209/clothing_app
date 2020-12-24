@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duyvo/models/Cart.dart';
 
 class Order {
-  static const status_new = 'Order Placed';
+  static const status_new = 1;
   final String id;
   final List<Cart> carts;
   final String total;
-  final String status;
+  final int status;
   final DateTime dateTime;
   final String name;
   final String phone;

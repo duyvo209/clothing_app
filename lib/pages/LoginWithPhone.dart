@@ -1,197 +1,163 @@
-import 'package:duyvo/pages/HomePage.dart';
+import 'package:duyvo/blocs/login_phone/login_phone_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:international_phone_input/international_phone_input.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:duyvo/pages/SignupPage.dart';
+import 'package:duyvo/blocs/authencation/authencation_bloc.dart';
 
-// ignore: must_be_immutable
-class LoginWithPhone extends StatelessWidget {
+class LoginWithPhone extends StatefulWidget {
+  @override
+  _LoginWithPhoneState createState() => _LoginWithPhoneState();
+}
+
+class _LoginWithPhoneState extends State<LoginWithPhone> {
   final _phoneController = TextEditingController();
+
   final _codeController = TextEditingController();
 
-  Future loginUser(String phone, BuildContext context) async {
-    FirebaseAuth _auth = FirebaseAuth.instance;
-
-    _auth.verifyPhoneNumber(
-        phoneNumber: phone,
-        timeout: Duration(seconds: 60),
-        verificationCompleted: (AuthCredential credential) async {
-          UserCredential result = await _auth.signInWithCredential(credential);
-
-          User user = result.user;
-          //  await FirebaseFirestore.instance
-          //     .collection('users')
-          //     .doc(data.user.uid)
-          //     .set({
-          //   'firstname': data.user.displayName,
-          //   'lastname': '',
-          //   'email': data.user.email,
-          //   'imageUser': data.user.photoURL,
-          // });
-
-          //This callback would gets called when verification is done auto maticlly
-        },
-        verificationFailed: (FirebaseAuthException exception) {
-          print(exception);
-        },
-        codeSent: (String verificationId, [int forceResendingToken]) {
-          print("code: $verificationId");
-          Fluttertoast.showToast(msg: 'Please check you message box');
-
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Give the code?"),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      TextField(
-                        controller: _codeController,
-                      ),
-                    ],
-                  ),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text("Confirm"),
-                      textColor: Colors.white,
-                      color: Colors.black,
-                      onPressed: () async {
-                        final code = _codeController.text.trim();
-                        // ignore: deprecated_member_use
-                        AuthCredential credential =
-                            // ignore: deprecated_member_use
-                            PhoneAuthProvider.getCredential(
-                                verificationId: verificationId, smsCode: code);
-
-                        UserCredential result =
-                            await _auth.signInWithCredential(credential);
-
-                        User user = result.user;
-
-                        if (user != null) {
-                          var data = await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(user.uid)
-                              .get();
-                          if (data.exists == true) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomePage(
-                                  user: user,
-                                ),
-                              ),
-                            );
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SignupPage(
-                                  uid: user.uid,
-                                  isRegisterWithPhone: true,
-                                ),
-                              ),
-                            );
-                          }
-                        } else {
-                          print("Error");
-                        }
-                      },
-                    )
-                  ],
-                );
-              });
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {});
-  }
-
-  String phoneNumber;
-  String phoneIsoCode;
-  void onPhoneNumberChange(
-      String number, String internationalizedPhoneNumber, String isoCode) {
-    setState(() {
-      phoneNumber = number;
-      phoneIsoCode = isoCode;
-    });
+  LoginPhoneBloc _loginPhoneBloc;
+  @override
+  void initState() {
+    _loginPhoneBloc =
+        LoginPhoneBloc(BlocProvider.of<AuthencationBloc>(context));
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(32),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Login",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 36,
+    return BlocListener<LoginPhoneBloc, LoginPhoneState>(
+      cubit: _loginPhoneBloc,
+      listener: (_, state) {
+        if (state.confirmCodeSuccess && state.userId.isEmpty) {
+          //Case user exist
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
+        if (state.userId.isNotEmpty) {
+          //Case new user
+          Navigator.push(
+            context,
+            new MaterialPageRoute(
+              builder: (context) => SignupPage(
+                uid: state.userId,
+              ),
+            ),
+          );
+        }
+        if (state.loginPhoneError.isNotEmpty) {
+          Fluttertoast.showToast(msg: state.loginPhoneError);
+        }
+        if (state.cofirmCodeError.isNotEmpty) {
+          Fluttertoast.showToast(msg: state.cofirmCodeError);
+        }
+        if (state.loginPhoneSuccess) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Give the code?"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextField(
+                      controller: _codeController,
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(color: Colors.grey[200])),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(color: Colors.grey[300])),
-                    filled: true,
-                    fillColor: Colors.grey[100],
-                    hintText: "Mobile Number"),
-                controller: _phoneController,
-              ),
-              // InternationalPhoneInput(
-              //   decoration: InputDecoration(
-              //       enabledBorder: OutlineInputBorder(
-              //           borderRadius: BorderRadius.all(Radius.circular(8)),
-              //           borderSide: BorderSide(color: Colors.grey[200])),
-              //       focusedBorder: OutlineInputBorder(
-              //           borderRadius: BorderRadius.all(Radius.circular(8)),
-              //           borderSide: BorderSide(color: Colors.grey[300])),
-              //       filled: true,
-              //       fillColor: Colors.grey[100],
-              //       hintText: "Mobile Number"),
-              //   onPhoneNumberChange: onPhoneNumberChange,
-              //   initialPhoneNumber: phoneNumber,
-              //   initialSelection: 'VN',
-              //   showCountryCodes: true,
-              // ),
-              SizedBox(
-                height: 16,
-              ),
-              Container(
-                width: double.infinity,
-                child: FlatButton(
-                  child: Text("LOGIN"),
-                  textColor: Colors.white,
-                  padding: EdgeInsets.all(16),
-                  onPressed: () {
-                    final phone = _phoneController.text.trim();
-                    loginUser('+$phone', context);
-                  },
-                  color: Colors.black,
-                ),
-              )
-            ],
-          ),
-        ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Confirm"),
+                    textColor: Colors.white,
+                    color: Colors.black,
+                    onPressed: () async {
+                      _loginPhoneBloc
+                          .add(VerifyCode(code: _codeController.text.trim()));
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              );
+            },
+          );
+        }
+      },
+      child: GestureDetector(
+        onTap: () {
+          //Hide keyboard tap outside
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: Scaffold(
+            body: BlocBuilder<LoginPhoneBloc, LoginPhoneState>(
+                cubit: _loginPhoneBloc,
+                builder: (context, state) {
+                  return LoadingOverlay(
+                    color: Colors.black.withOpacity(0.5),
+                    isLoading:
+                        state.confirmCodeLoading || state.loginPhoneLoading,
+                    progressIndicator: CircularProgressIndicator(),
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.all(32),
+                        child: Form(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Login",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 36,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              TextFormField(
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8)),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[200])),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8)),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300])),
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    hintText: "Mobile Number"),
+                                controller: _phoneController,
+                              ),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              Container(
+                                width: double.infinity,
+                                child: FlatButton(
+                                  child: Text("LOGIN"),
+                                  textColor: Colors.white,
+                                  padding: EdgeInsets.all(16),
+                                  onPressed: () {
+                                    final phone = _phoneController.text.trim();
+                                    _loginPhoneBloc.add(
+                                        LoginPhone(phoneNumber: '+$phone'));
+                                  },
+                                  color: Colors.black,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                })),
       ),
-    ));
+    );
   }
-
-  void setState(Null Function() param0) {}
 }

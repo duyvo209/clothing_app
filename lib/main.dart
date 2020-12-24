@@ -87,14 +87,13 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(create: (context) => OrderBloc()),
           BlocProvider(create: (context) => YourorderBloc()),
           BlocProvider(create: (context) => UserBloc()),
+          BlocProvider(create: (context) => LoginBloc()),
           BlocProvider(
               create: (context) => AuthencationBloc(
+                  loginBloc: BlocProvider.of<LoginBloc>(context),
                   cartBloc: BlocProvider.of<CartBloc>(context),
                   userBloc: BlocProvider.of<UserBloc>(context))
                 ..add(StartApp())),
-          BlocProvider(
-              create: (context) =>
-                  LoginBloc(BlocProvider.of<AuthencationBloc>(context))),
         ],
         child: ThemeBuilder(
             defaultBrightness: Brightness.light,

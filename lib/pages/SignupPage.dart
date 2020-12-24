@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:duyvo/blocs/authencation/authencation_bloc.dart';
 
 class SignupPage extends StatefulWidget {
   final String uid;
@@ -147,8 +148,9 @@ class _SignupPageState extends State<SignupPage> {
 
     return BlocListener<RegisterBloc, RegisterState>(listener: (_, state) {
       if (state.registerSuccess) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.pop(context);
       }
     }, child: BlocBuilder<RegisterBloc, RegisterState>(
       builder: (context, state) {

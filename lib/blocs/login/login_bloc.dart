@@ -14,8 +14,7 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  AuthencationBloc authencationBloc;
-  LoginBloc(this.authencationBloc) : super(LoginState.empty());
+  LoginBloc() : super(LoginState.empty());
   final firebaseAuth = FirebaseAuth.instance;
 
   @override
@@ -38,7 +37,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
           yield state.copyWith(
               loginLoading: false, loginSuccess: true, user: result.user);
-          authencationBloc.add(LoggedIn());
         }
       } on FirebaseAuthException catch (e) {
         yield state.copyWith(
@@ -80,7 +78,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           });
           yield state.copyWith(
               loginLoading: false, loginSuccess: true, user: data.user);
-          authencationBloc.add(LoggedIn());
         }
       } catch (e) {
         yield state.copyWith(
@@ -92,34 +89,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
 
     if (event is LoginWithPhoneNumber) {
-      try {
-        yield state.copyWith(
-          loginLoading: true,
-          loginSuccess: false,
-          loginError: '',
-        );
-      } catch (e) {
-        yield state.copyWith(
-          loginError: e.toString(),
-          loginLoading: false,
-          loginSuccess: false,
-        );
-      }
-    }
-
-    if (event is LogOut) {
-      try {
-        yield state.copyWith(
-          logoutLoading: true,
-        );
-        await firebaseAuth.signOut();
-        authencationBloc.add(LoggedOut());
-        yield state.copyWithUser(null);
-      } catch (e) {
-        yield state.copyWith(
-          logoutLoading: false,
-        );
-      }
+      yield state.copyWith(
+          loginSuccess: true, user: FirebaseAuth.instance.currentUser);
     }
   }
 }

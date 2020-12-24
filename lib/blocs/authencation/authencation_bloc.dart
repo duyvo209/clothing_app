@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:duyvo/blocs/login/login_bloc.dart';
 
 part 'authencation_event.dart';
 part 'authencation_state.dart';
@@ -15,7 +16,11 @@ part 'authencation_state.dart';
 class AuthencationBloc extends Bloc<AuthencationEvent, AuthencationState> {
   final CartBloc cartBloc;
   final UserBloc userBloc;
-  AuthencationBloc({@required this.cartBloc, @required this.userBloc})
+  final LoginBloc loginBloc;
+  AuthencationBloc(
+      {@required this.cartBloc,
+      @required this.userBloc,
+      @required this.loginBloc})
       : super(AuthencationInitial());
   final firebaseAuth = FirebaseAuth.instance;
 
@@ -53,18 +58,24 @@ class AuthencationBloc extends Bloc<AuthencationEvent, AuthencationState> {
               userBloc.add(GetUser(userCredential.user.uid));
 
               yield AuthenticationAuthenticated(user: userCredential.user);
-            } else if (loginMethod == Constants.LOGIN_WITH_PHONE) {
-              // firebaseAuth.verifyPhoneNumber(
-              //     phoneNumber: user,
-              //     verificationCompleted: (data){
-              //     },
-              //     verificationFailed: null,
-              //     codeSent: null,
-              //     codeAutoRetrievalTimeout: null);
-              // ConfirmationResult confirmationResult =
-              //     await firebaseAuth.signInWithPhoneNumber(user);
-              // confirmationResult.confirm(verificationCode)
             }
+          } else if (loginMethod == Constants.LOGIN_WITH_PHONE) {
+            var userId = FirebaseAuth.instance.currentUser.uid;
+            cartBloc.add(GetListCart(userId));
+            userBloc.add(GetUser(userId));
+            loginBloc.add(LoginWithPhoneNumber());
+            yield AuthenticationAuthenticated(
+                user: FirebaseAuth.instance.currentUser);
+            // firebaseAuth.verifyPhoneNumber(
+            //     phoneNumber: user,
+            //     verificationCompleted: (data){
+            //     },
+            //     verificationFailed: null,
+            //     codeSent: null,
+            //     codeAutoRetrievalTimeout: null);
+            // ConfirmationResult confirmationResult =
+            //     await firebaseAuth.signInWithPhoneNumber(user);
+            // confirmationResult.confirm(verificationCode)
           }
         } else {
           yield AuthenticationUnauthenticated();

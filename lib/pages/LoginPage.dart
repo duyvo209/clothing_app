@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:duyvo/blocs/authencation/authencation_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -92,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
               });
         }
         if (state.loginSuccess) {
+          BlocProvider.of<AuthencationBloc>(context).add(LoggedIn());
           Navigator.popUntil(context, (route) => route.isFirst);
         }
       },
