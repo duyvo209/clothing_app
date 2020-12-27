@@ -163,10 +163,20 @@ class _OrderPageState extends State<OrderPage> {
                               SizedBox(
                                 height: 10,
                               ),
-                              Text(
-                                  "Status".tr().toString() +
-                                      ": ${order.status}",
-                                  textAlign: TextAlign.center),
+                              if (order.status == 0)
+                                Text(
+                                    "Status".tr().toString() + ": " + "To Pay"),
+                              if (order.status == 1)
+                                Text("Status".tr().toString() + ": " "To Ship"),
+                              if (order.status == 2)
+                                Text("Status".tr().toString() +
+                                    ": " "To Receive"),
+                              if (order.status == 3)
+                                Text("Status".tr().toString() + ": " "To Rate"),
+                              // Text(
+                              //     "Status".tr().toString() +
+                              //         ": ${order.status}",
+                              //     textAlign: TextAlign.center),
                               SizedBox(
                                 height: 20,
                               ),
