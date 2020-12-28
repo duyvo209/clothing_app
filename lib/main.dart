@@ -102,7 +102,7 @@ class _MyAppState extends State<MyApp> {
                 debugShowCheckedModeBanner: false,
                 theme: ThemeData(
                   fontFamily: "poppins",
-                  scaffoldBackgroundColor: Colors.white,
+                  // scaffoldBackgroundColor: Colors.white,
                   dividerColor: Colors.transparent,
                   // primarySwatch: Colors.blue,
                   brightness: _brightness,

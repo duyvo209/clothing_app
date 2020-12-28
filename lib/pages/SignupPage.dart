@@ -1,5 +1,5 @@
 import 'package:duyvo/blocs/register/register_bloc.dart';
-import 'package:duyvo/pages/LoginPage.dart';
+// import 'package:duyvo/pages/LoginPage.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -387,11 +387,11 @@ class _SignupPageState extends State<SignupPage> {
                                             imageUser: url,
                                             uid: widget.uid));
                                     uploadPic();
-                                    await Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) =>
-                                                new LoginPage()));
+                                    // await Navigator.push(
+                                    //     context,
+                                    //     new MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             new LoginPage()));
                                   },
                                   child: Container(
                                     height: 50,

@@ -66,16 +66,6 @@ class AuthencationBloc extends Bloc<AuthencationEvent, AuthencationState> {
             loginBloc.add(LoginWithPhoneNumber());
             yield AuthenticationAuthenticated(
                 user: FirebaseAuth.instance.currentUser);
-            // firebaseAuth.verifyPhoneNumber(
-            //     phoneNumber: user,
-            //     verificationCompleted: (data){
-            //     },
-            //     verificationFailed: null,
-            //     codeSent: null,
-            //     codeAutoRetrievalTimeout: null);
-            // ConfirmationResult confirmationResult =
-            //     await firebaseAuth.signInWithPhoneNumber(user);
-            // confirmationResult.confirm(verificationCode)
           }
         } else {
           yield AuthenticationUnauthenticated();

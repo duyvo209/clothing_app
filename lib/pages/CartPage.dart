@@ -10,9 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:easy_localization/easy_localization.dart';
-// import 'package:flutter_google_places/flutter_google_places.dart';
-
-// const kGoogleApiKey = "AIzaSyC3FSrmevLtelYf5BqubgE8j-5lFODH9lQ";
 
 double getTotalPrice(List<Cart> carts) {
   return carts

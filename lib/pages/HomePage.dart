@@ -306,7 +306,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            SizedBox(height: 11),
+            SizedBox(height: 10),
             ListTile(
               onTap: () {
                 Navigator.pop(context);
