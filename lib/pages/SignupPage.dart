@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:duyvo/blocs/authencation/authencation_bloc.dart';
+// import 'package:duyvo/blocs/authencation/authencation_bloc.dart';
 
 class SignupPage extends StatefulWidget {
   final String uid;
@@ -387,6 +387,11 @@ class _SignupPageState extends State<SignupPage> {
                                             imageUser: url,
                                             uid: widget.uid));
                                     uploadPic();
+                                    await Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) =>
+                                                new LoginPage()));
                                   },
                                   child: Container(
                                     height: 50,
